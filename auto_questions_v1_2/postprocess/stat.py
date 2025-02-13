@@ -5,6 +5,7 @@ import statistics
 from pathlib import Path
 from collections import Counter
 import sys
+from functools import reduce
 
 # 将上级目录加入到sys.path中
 sys.path.append(Path(__file__).resolve().parents[1].as_posix())
@@ -115,8 +116,8 @@ def level_stat(records: list[dict]) -> str:
     report += "\n\t".join([f"{k}：{v}" for k, v in counter.items()])
     return report
 
-def typetag_stat(records: list[dict]) -> str:
-    """类型标签统计
+def statements_tag_stat(records: list[dict]) -> str:
+    """命题类型标签统计
     
     Args:
         records (list[dict]): 数据记录
@@ -124,20 +125,64 @@ def typetag_stat(records: list[dict]) -> str:
     Returns:
         str: 统计报告
     """
-    # 尝试读取typetags数据，如果没有则返回空统计报告
-    try:
-        example_tag = records[0]["typetags"]
-    except KeyError:
-        return ""
-    # 读取typetags数据
-    # 1-11修订：应数据结构修改要求修改数据读取方式
-    # data: list[str] = [tag for r in records for tag in r["typetags"]]
-    data: list[str] = [tag for r in records for tag in r[proposition.config.QUES_INFO]["typetags"]]
+    # 读取数据
+    data: list[list[str]] = [r[proposition.config.QUES_INFO][proposition.config.STATEMENTS_TYPE] for r in records]
+    # 将二维列表转换为一维列表
+    data = reduce(lambda x, y: x + y, data)
     # 统计数据
     counter = Counter(data)
     result = counter.most_common()
     # 生成报告
-    report: str = "类型标签统计：\n\t" + "\n\t".join([f"{k}：{v}" for k, v in result])
+    report: str = "命题类型标签统计：\n\t" + "\n\t".join([f"{k}：{v}" for k, v in result])
+    return report
+
+# 1-18修改：修改问题类型标签统计函数逻辑
+def question_tag_stat(records: list[dict]) -> str:
+    """问题类型标签统计
+    
+    Args:
+        records (list[dict]): 数据记录
+
+    Returns:
+        str: 统计报告
+    """
+    """
+    # 尝试读取typetags数据，如果没有则返回空统计报告
+    try:
+        example_tag = records[0][proposition.config.QUESTION_TYPE]
+    except KeyError:
+        return ""
+    """
+    # 读取typetags数据
+    # 1-11修订：应数据结构修改要求修改数据读取方式
+    # data: list[str] = [tag for r in records for tag in r["typetags"]]
+    # data: list[list[str]] = [tag for r in records for tag in r[proposition.config.QUES_INFO][proposition.config.QUESTION_TYPE]]
+    data: list[list[str]] = [r[proposition.config.QUES_INFO][proposition.config.QUESTION_TYPE] for r in records]
+    # 将二维列表转换为一维列表
+    data = reduce(lambda x, y: x + y, data)
+    # 统计数据
+    counter = Counter(data)
+    result = counter.most_common()
+    # 生成报告
+    report: str = "问题类型标签统计：\n\t" + "\n\t".join([f"{k}：{v}" for k, v in result])
+    return report
+
+def answer_num_stat(records: list[dict]) -> str:
+    """选项数量统计
+    
+    Args:
+        records (list[dict]): 数据记录
+
+    Returns:
+        str: 统计报告
+    """
+    # 读取数据
+    data: list[int] = [len(r[proposition.config.ANSWER]) for r in records]
+    # 统计每个数量的试题量
+    counter = Counter(data)
+    sorted_data = counter.most_common()
+    # 生成报告
+    report: str = "选项数量统计：\n\t" + "\n\t".join([f"选项数量{k}：{v}" for k, v in sorted_data])
     return report
 
 def stat(data: list[dict]) -> str:
@@ -151,10 +196,13 @@ def stat(data: list[dict]) -> str:
     """
     reports = [
         init_num_stat(data), 
+        # 1-22新增：增加选项数量统计
+        answer_num_stat(data),
         chain_length_stat(data), 
         scene_type_stat(data), 
         level_stat(data), 
-        typetag_stat(data)
+        statements_tag_stat(data),
+        question_tag_stat(data), 
     ]
     return "\n\n".join(reports)
 
