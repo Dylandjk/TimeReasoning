@@ -17,6 +17,7 @@ from pathlib import Path
 sys.path.append(Path(__file__).resolve().parents[1].as_posix())
 
 import proposition.element as element
+import proposition.config as config
 
 # 返回的问题信息
 SENTENCE = "sentence"
@@ -35,6 +36,10 @@ class Proposition(element.Element):
         """
         self.askable = askable # 是否可询问
         self.precise = precise # 是否精确
+        # 1-15新增：命题的难度等级
+        self.difficulty: float = 1.0 # 难度等级，默认为1
+        # 1-28新增：命题的问题难度等级，默认与命题的难度等级相同
+        self.question_difficulty: float = self.difficulty
 
     @property
     def num_of_conditions(self) -> int:
@@ -87,9 +92,13 @@ class Proposition(element.Element):
         while q_key is None or f"[{q_key}]" not in curr_temp:
             q_key = random.choice(list(self.attrs().keys()))
         curr_ans = vars(self)[q_key]
-        curr_dict = self.attrs() | {q_key: "____"}
+        curr_dict = self.attrs() | {q_key: config.ASK_POINT}
         for k, v in curr_dict.items():
             curr_temp = curr_temp.replace(f"[{k}]", v)
+        # 计算命题的问题难度等级：增加下划线索引与SENTENCE长度的比例值相关的反比例函数
+        # 1-29新增：考虑下划线索引的中间值
+        # 1-31新增：将下划线影响改为2
+        self.question_difficulty = self.difficulty + 2 * (1 - (curr_temp.index(config.ASK_POINT) + 2) / len(curr_temp))
         return {SENTENCE: curr_temp, TYPE: q_key, ANSWER: curr_ans}
 
     def __eq__(self, other: object) -> bool:
@@ -142,6 +151,15 @@ class Proposition(element.Element):
         """返回命题的类型标签，为str"""
         return ""
 
+    # 1-17添加：一个验证函数，用于验证命题的合法性
+    def sancheck(self) -> bool:
+        """验证命题的合理性
+
+        Returns:
+            bool: 命题是否合理
+        """
+        return True
+
 # 按照主要元个数的不同定义Proposition的子类，以解耦领域和推理
 
 class SingleProp(Proposition):
@@ -169,6 +187,15 @@ class DoubleProp(Proposition):
     def __eq__(self, other: object) -> bool:
         return super().__eq__(other) and self.element1 == other.element1 and self.element2 == other.element2
 
+    # 1-17添加：一个验证函数，用于验证命题的合理性
+    def sancheck(self) -> bool:
+        """验证2元命题的合理性，即两个元素不能相等
+
+        Returns:
+            bool: 命题是否合理
+        """
+        return self.element1 != self.element2
+
 class TripleProp(Proposition):
     def __init__(self, element1: element.Element, element2: element.Element, element3: element.Element, askable: bool = True, precise: bool = True):
         super().__init__(askable, precise)
@@ -178,3 +205,12 @@ class TripleProp(Proposition):
 
     def __eq__(self, other: object) -> bool:
         return super().__eq__(other) and self.element1 == other.element1 and self.element2 == other.element2 and self.element3 == other.element3
+
+    # 1-17添加：一个验证函数，用于验证命题的合理性
+    def sancheck(self) -> bool:
+        """验证3元命题的合法性，即元素不能相等
+
+        Returns:
+            bool: 命题是否合理
+        """
+        return self.element1 != self.element2 and self.element1 != self.element3 and self.element2 != self.element3

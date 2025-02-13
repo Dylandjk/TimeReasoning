@@ -16,6 +16,7 @@
                     "object": "", // 名词，和原来的event相同
                 }
             ], 
+            "difficulty": 1, // 事件难度，1-3，1为简单，3为困难
         }, 
         {
             "subtype": "temporal",
@@ -29,6 +30,7 @@
                     "object": "", // 名词，和原来的event相同
                 }
             ], 
+            "difficulty": 1, // 事件难度，1-3，1为简单，3为困难
         }, 
         {
             "subtype": "durative",
@@ -36,34 +38,44 @@
             "object": "第一次世界大战",
             "time": 1914,
             "endtime": 1918,
+            // 1-13新增：新增持续事件的起始、结束事件名称
+            "start": {
+                "verb": "第一次世界大战开始",
+                "object": "",
+            },
+            "end": {
+                "verb": "第一次世界大战结束",
+                "object": "",
+            },
             "language": [
                 {
                     "lang": "en", // 语言类型
-                    "verb": "the World War I", // 动词，和原来的event相同
+                    "verb": "World War I", // 动词，和原来的event相同
                     "object": "", // 名词，和原来的event相同
                 }
             ], 
             "start_language": [
                 {
                     "lang": "en", // 语言类型
-                    "verb": "the World War I started", // 动词，和原来的event相同
+                    "verb": "World War I started", // 动词，和原来的event相同
                     "object": "", // 名词，和原来的event相同
                 },
             ],
             "end_language": [
                 {
                     "lang": "en", // 语言类型
-                    "verb": "the World War I ended", // 动词，和原来的event相同
+                    "verb": "World War I ended", // 动词，和原来的event相同
                     "object": "", // 名词，和原来的event相同
                 },
             ],
             "duration_language": [
                 {
                     "lang": "en", // 语言类型
-                    "verb": "the World War I continued", // 动词，和原来的event相同
+                    "verb": "World War I continued", // 动词，和原来的event相同
                     "object": "", // 名词，和原来的event相同
                 },
-            ]
+            ], 
+            "difficulty": 1, // 事件难度，1-3，1为简单，3为困难
         }, 
         {
             "subtype": "temporal",
@@ -77,6 +89,7 @@
                     "object": "", // 名词，和原来的event相同
                 }
             ], 
+            "difficulty": 2, // 事件难度，1-3，1为简单，3为困难
         }, 
         {
             "subtype": "temporal",
@@ -90,6 +103,7 @@
                     "object": "", // 名词，和原来的event相同
                 }
             ], 
+            "difficulty": 3, // 事件难度，1-3，1为简单，3为困难
         }, 
         {
             "subtype": "temporal",
@@ -99,23 +113,26 @@
             "language": [
                 {
                     "lang": "en", // 语言类型
-                    "verb": "United Nations founded", // 动词，和原来的event相同
+                    "verb": "the United Nations was founded", // 动词，和原来的event相同
                     "object": "", // 名词，和原来的event相同
                 }
             ], 
+            "difficulty": 1, // 事件难度，1-3，1为简单，3为困难
         }, 
         {
+            // 修正一个新的事件
             "subtype": "temporal",
-            "verb": "第一台彩色电视机被生产",
+            "verb": "迈克尔·杰克逊出生",
             "object": "",
-            "time": 1954, // 修正事件发生的时间
+            "time": 1958, // 修正事件发生的时间
             "language": [
                 {
                     "lang": "en", // 语言类型
-                    "verb": "the first color television was produced", // 动词，和原来的event相同
+                    "verb": "Michael Jackson was born", // 动词，和原来的event相同
                     "object": "", // 名词，和原来的event相同
                 }
             ], 
+            "difficulty": 1, // 事件难度，1-3，1为简单，3为困难
         }, 
         {
             "subtype": "temporal",
@@ -129,6 +146,7 @@
                     "object": "", // 名词，和原来的event相同
                 }
             ], 
+            "difficulty": 1, // 事件难度，1-3，1为简单，3为困难
         }, 
         {
             "subtype": "temporal",
@@ -142,6 +160,7 @@
                     "object": "", // 名词，和原来的event相同
                 }
             ], 
+            "difficulty": 2, // 事件难度，1-3，1为简单，3为困难
         }, 
     ], 
     "order": [], 
